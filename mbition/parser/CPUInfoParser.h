@@ -6,5 +6,6 @@ class CPUInfoParser : public Parser
     CPUInfoParser();
     ~CPUInfoParser() = default;
 
-    virtual void startParsing();
+protected:
+    virtual bool parse(QString &line);
 };

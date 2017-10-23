@@ -12,18 +12,21 @@ public:
 
     bool setFile(const QString &filePath);
 
-    virtual void startParsing() = 0;
+    bool isValid();
+
+    void startParsing();
 
     void stop();
 
-    virtual QStringList getResult();
+protected:
+    virtual bool parse(QString& line) = 0;
 
 signals:
     void started();
-    void finished();
+    void finished(const QStringList &result);
+    void error(const QString &error);
 
-protected:
+private:
     bool        m_stop{false};
     QFile       m_file;
-    QStringList m_result;
 };

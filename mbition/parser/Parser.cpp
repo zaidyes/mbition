@@ -18,12 +18,42 @@ bool Parser::setFile(const QString &filePath)
         return false;
     }
 
-    if (!m_file.isReadable()) {
+    return true;
+}
+
+bool Parser::isValid()
+{
+    return m_file.exists();
+}
+
+void Parser::startParsing()
+{
+    if (!m_file.open(QIODevice::ReadOnly)) {
         qDebug() << "Cannot open file";
-        return false;
+        emit error("Cannot open file");
+        return;
     }
 
-    return true;
+    emit started();
+
+    QTextStream in(&m_file);
+    QStringList result;
+    while(!in.atEnd()) {
+        if (m_stop) {
+            qDebug() << "Parsing stopped";
+            emit error("Parsing stopped");
+            return;
+        }
+
+        QString line = in.readLine();
+        if (parse(line)) {
+            result.append(line);
+        }
+    }
+
+    m_file.close();
+
+    emit finished(result);
 }
 
 void Parser::stop()
@@ -31,7 +61,3 @@ void Parser::stop()
     m_stop = true;
 }
 
-QStringList Parser::getResult()
-{
-    return m_result;
-}
