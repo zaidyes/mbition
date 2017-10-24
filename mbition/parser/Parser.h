@@ -10,23 +10,25 @@ public:
     Parser() = default;
     virtual ~Parser() = default;
 
-    bool setFile(const QString &filePath);
+    void setFile(const QString &filePath);
 
-    bool isValid();
+    const QString getFileName() const;
+
+    bool isValid() const;
 
     void startParsing();
 
-    void stop();
+    QStringList getRawResult() const { return m_result; }
 
 protected:
-    virtual bool parse(QString& line) = 0;
+    virtual void parse(QString& line) = 0;
 
 signals:
     void started();
-    void finished(const QStringList &result);
+    void finished();
     void error(const QString &error);
 
 private:
-    bool        m_stop{false};
     QFile       m_file;
+    QStringList m_result;
 };

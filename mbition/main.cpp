@@ -1,3 +1,4 @@
+#include <QDebug>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
@@ -19,7 +20,27 @@ int main(int argc, char *argv[])
 
     CPUInfoParser cpuInfoParser;
 
-    QObject::connect(&cpuInfoParser, &CPUInfoParser::finished, [&ctxt](const QStringList &result) {
+    QObject::connect(&cpuInfoParser, &CPUInfoParser::finished, [&]() {
+       QStringList result;
+
+       std::vector<CPUInfo> cpuInfos = cpuInfoParser.getCPUInfos();
+       for (auto itr = cpuInfos.begin(); itr < cpuInfos.end(); ++itr) {
+          result.append("Processor: " + itr->processorName);
+          result.append("Cores: " + QString::number(itr->cores));
+          result.append("---------------------------------------------------");
+          result.append("---------------------------------------------------");
+       }
+
+       std::vector<ProcInfo> procInfos = cpuInfoParser.getProcInfos();
+       for (auto itr = procInfos.begin(); itr < procInfos.end(); ++itr) {
+           result.append("ProcessorId: " + itr->processorId);
+           result.append("VendorId: " + itr->vendorId);
+           result.append("Clock Speed: " + itr->clockSpeed);
+           result.append("Cache Size: " + itr->cacheSize);
+           result.append("Core Id: " + itr->coreId);
+           result.append("---------------------------------------------------");
+       }
+
        ctxt->setContextProperty("parsedModel", QVariant::fromValue(result));
     });
 
@@ -27,7 +48,11 @@ int main(int argc, char *argv[])
        ctxt->setContextProperty("parsedModel", QVariant::fromValue(QStringList() << error));
     });
 
-    cpuInfoParser.startParsing();
+    if (cpuInfoParser.isValid()) {
+        cpuInfoParser.startParsing();
+    } else {
+         qDebug() << cpuInfoParser.getFileName() << "cannot be read";
+    }
 
     return app.exec();
 }
