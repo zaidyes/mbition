@@ -1,3 +1,5 @@
+#define pragma once
+
 #include <QFile>
 #include <QObject>
 #include <QStringList>
@@ -5,7 +7,6 @@
 class Parser : public QObject
 {
     Q_OBJECT
-
 public:
     Parser() = default;
     virtual ~Parser() = default;

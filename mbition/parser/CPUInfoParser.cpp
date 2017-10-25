@@ -4,15 +4,21 @@
 #include <QString>
 #include <QTextStream>
 
-//const QString procFile{"/home/yoctoadm/Projects/mbition/build/Debug/proc_cpuinfo.txt"};
-const QString procFile{"/proc/cpuinfo"};
+const QString PROC_FILE{"C:/Users/Juqueen/Desktop/zaid/mbition/mbition/build/debug/proc_info.txt"};
+//const QString procFile{"/proc/cpuinfo"};
 
 CPUInfoParser::CPUInfoParser()
 {
-    setFile(procFile);
+    connect(this, SIGNAL(finished()), this, SIGNAL(summaryReady()));
+    setFile(PROC_FILE);
 }
 
-QVariant CPUInfoParser::getCpuSummary() const
+CPUInfoParser::~CPUInfoParser()
+{
+    m_procInfos.clear();
+}
+
+QString CPUInfoParser::getCpuSummary()
 {
     QString summary;
     for (auto itr = m_cpuInfos.begin(); itr < m_cpuInfos.end(); ++itr) {
@@ -24,7 +30,7 @@ QVariant CPUInfoParser::getCpuSummary() const
         summary += ("Cores: " + QString::number(itr->cores));
     }
 
-    return QVariant::fromValue(summary);
+    return summary;
 }
 
 void CPUInfoParser::parse(QString &line)
@@ -38,23 +44,23 @@ void CPUInfoParser::parse(QString &line)
     QString value = keyValue[1].simplified();
 
     if (key == "processor") {
-        ProcInfo newProc;
-        newProc.processorId = value;
-        newProc.rawInfo.append(key + ":" + value);
-        m_procInfos.push_back(std::move(newProc));
+        ProcInfo *newProc = new ProcInfo(this);
+        newProc->setProcessorId(value);
+        newProc->getRawInfo().append(key + ":" + value);
+        m_procInfos.push_back(newProc);
         return;
     }
 
     if (key == "vendor_id") {
-        m_procInfos.back().vendorId = value;
+        m_procInfos.back()->setVendorId(value);
     } else if (key == "model name") {
-        m_procInfos.back().modelName = value;
+        m_procInfos.back()->setModelName(value);
     } else if (key == "cpu MHz") {
-        m_procInfos.back().clockSpeed = value;
+        m_procInfos.back()->setClockSpeed(value);
     } else if (key == "cache size") {
-        m_procInfos.back().cacheSize = value;
+        m_procInfos.back()->setCacheSize(value);
     } else if (key == "physical id") {
-        m_procInfos.back().physicalId = value;
+        m_procInfos.back()->setPhysicalId(value);
         // See if we already have this processor name else create new processor
         auto findItr = std::find_if(m_cpuInfos.begin(), m_cpuInfos.end(), [&value](const CPUInfo& cInfo) {
             return cInfo.physicalId == value;
@@ -64,15 +70,15 @@ void CPUInfoParser::parse(QString &line)
         if(findItr == m_cpuInfos.end()) {
             CPUInfo cpuInfo;
             cpuInfo.physicalId = value;
-            cpuInfo.processorName = m_procInfos.back().modelName;
+            cpuInfo.processorName = m_procInfos.back()->getModelName();
             cpuInfo.cores = 0;
             cpuInfo.threads = 0;
             m_cpuInfos.push_back(std::move(cpuInfo));
         }
     } else if (key == "core id") {
-        m_procInfos.back().coreId = value;
+        m_procInfos.back()->setCoreId(value);
         m_cpuInfos.back().cores++;
     }
 
-    m_procInfos.back().rawInfo.append(key + ":" + value);
+    m_procInfos.back()->getRawInfo().append(key + ":" + value);
 }

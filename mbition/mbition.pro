@@ -4,7 +4,8 @@ QT += qml quick
 
 SOURCES += main.cpp \
     parser/CPUInfoParser.cpp \
-    parser/Parser.cpp
+    parser/Parser.cpp \
+    data/DataTypes.cpp
 
 RESOURCES += qml.qrc
 
@@ -16,4 +17,5 @@ include(deployment.pri)
 
 HEADERS += \
     parser/CPUInfoParser.h \
-    parser/Parser.h
+    parser/Parser.h \
+    data/DataTypes.h
