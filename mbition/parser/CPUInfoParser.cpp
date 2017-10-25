@@ -12,6 +12,21 @@ CPUInfoParser::CPUInfoParser()
     setFile(procFile);
 }
 
+QVariant CPUInfoParser::getCpuSummary() const
+{
+    QString summary;
+    for (auto itr = m_cpuInfos.begin(); itr < m_cpuInfos.end(); ++itr) {
+        if(itr != m_cpuInfos.begin()) {
+            summary += "\n";
+        }
+        summary = ("Processor: " + itr->processorName);
+        summary += "\n";
+        summary += ("Cores: " + QString::number(itr->cores));
+    }
+
+    return QVariant::fromValue(summary);
+}
+
 void CPUInfoParser::parse(QString &line)
 {
     QStringList keyValue = line.split(":");

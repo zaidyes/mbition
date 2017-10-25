@@ -8,19 +8,19 @@
 
 int main(int argc, char *argv[])
 {
-    qmlRegisterType<CPUInfoParser>("com.prototype.cpuinfoparser", 1, 0, "CPUInfoParser");
+    //qmlRegisterType<CPUInfoParser>("com.prototype.cpuinfoparser", 1, 0, "CPUInfoParser");
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
     QQmlContext *ctxt = engine.rootContext();
-    ctxt->setContextProperty("parsedModel", QVariant::fromValue(QStringList()));
-
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    ctxt->setContextProperty("parsedModel", QVariant::fromValue(QStringList()));    
 
     CPUInfoParser cpuInfoParser;
+    ctxt->setContextProperty("cpuInfoParser", &cpuInfoParser);
 
-    QObject::connect(&cpuInfoParser, &CPUInfoParser::finished, [&]() {
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    /*QObject::connect(&cpuInfoParser, &CPUInfoParser::finished, [&]() {
        QStringList result;
 
        std::vector<CPUInfo> cpuInfos = cpuInfoParser.getCPUInfos();
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
        }
 
        ctxt->setContextProperty("parsedModel", QVariant::fromValue(result));
-    });
+    });*/
 
     QObject::connect(&cpuInfoParser, &CPUInfoParser::error, [&ctxt](const QString &error) {
        ctxt->setContextProperty("parsedModel", QVariant::fromValue(QStringList() << error));
