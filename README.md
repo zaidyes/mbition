@@ -1,6 +1,6 @@
 # mbition assignment
 
-Requirements:
+<b>Requirements</b>:
 
 
 1- C++11 compatiable compiler
@@ -14,7 +14,7 @@ Requirements:
 
 
 
-To compile:
+<b>To compile</b>:
 
 
 1- clone the repository.
@@ -34,7 +34,7 @@ To compile:
 
 
 
-To run:
+<b>To run</b>:
 
 
 1- sudo <buildDir>/mbition
