@@ -4,6 +4,10 @@
 #include <QObject>
 #include <QStringList>
 
+/**
+ * @brief The Parser class
+ * An abstract class that provides basic file read and parse functionality
+ */
 class Parser : public QObject
 {
     Q_OBJECT

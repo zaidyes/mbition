@@ -3,6 +3,7 @@
 #include <QString>
 #include <QStringList>
 #include <QObject>
+#include <QVariant>
 
 struct CPUInfo
 {
@@ -12,18 +13,22 @@ struct CPUInfo
     int threads;
 };
 
+/**
+ * @brief The ProcInfo class
+ * A Qobject based class that constitutes the items in the model which drive the listview
+ */
 class ProcInfo : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QString processorId READ getProcessorId)
-    Q_PROPERTY(QString vendorID READ getVendorId)
+    Q_PROPERTY(QString vendorId READ getVendorId)
     Q_PROPERTY(QString modelName READ getModelName)
     Q_PROPERTY(QString clockSpeed READ getClockSpeed)
     Q_PROPERTY(QString cacheSize READ getCacheSize)
     Q_PROPERTY(QString physicalId READ getPhysicalId)
     Q_PROPERTY(QString coreId READ getCoreId)
-    Q_PROPERTY(QStringList rawInfo READ getRawInfo)
+    Q_PROPERTY(QVariant moreInfo READ getMoreInfo)
 
 public:
 
@@ -53,6 +58,8 @@ public:
 
     QStringList& getRawInfo();
     void setRawInfo(const QStringList &value);
+
+    QVariant getMoreInfo();
 
 private:
 

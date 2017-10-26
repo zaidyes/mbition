@@ -2,28 +2,44 @@
 
 #include "Parser.h"
 
-#include <memory>
 #include <vector>
 
-#include <qqml.h>
 #include <QList>
 #include <data/DataTypes.h>
 
+/**
+ * @brief The CPUInfoParser class
+ * Specialized class to parse /proc/cpu_info and provide models for the ui
+ */
 class CPUInfoParser : public Parser
 {
-    Q_OBJECT
-    Q_PROPERTY(QString cpuSummary READ getCpuSummary NOTIFY summaryReady)
-    //Q_PROPERTY(QVariant procInfo READ getProcInfo NOTIFY summaryReady)
-
 public:
     CPUInfoParser();
     ~CPUInfoParser();
 
-    QList<ProcInfo*> getProcInfo() const { return m_procInfos; }
+    /**
+     * @brief getProcInfo
+     * @return a vector of ProcInfo objects with information from parsing
+     */
+    const std::vector<ProcInfo*>& getProcInfo() const { return m_procInfos; }
+
+    /**
+     * @brief getCPUInfos
+     * @return a vector of CpuInfo objects that can be used to make summary
+     */
     const std::vector<CPUInfo>& getCPUInfos() const { return m_cpuInfos; }
 
+    /**
+     * @brief getCpuSummary
+     * @return a summary derived from the cpu info we parsed
+     */
     QString getCpuSummary();
-    QList<QObject*> getProcInfos() {
+
+    /**
+     * @brief getProcObjects
+     * @return a QList<QObject*> style model to drive the list view
+     */
+    QList<QObject*> getProcObjects() {
         QList<QObject*> result;
         foreach(ProcInfo* procInfo, m_procInfos) {
             result.append(procInfo);
@@ -32,16 +48,10 @@ public:
         return result;
     }
 
-
-signals:
-    void summaryReady(QPrivateSignal);
-
 protected:
     void parse(QString &line) final;
 
 private:
     std::vector<CPUInfo>    m_cpuInfos;
-    QList<ProcInfo*>        m_procInfos;
+    std::vector<ProcInfo*>  m_procInfos;
 };
-
-//QML_DECLARE_TYPEINFO(CPUInfoParser, QML_HAS_ATTACHED_PROPERTIES)

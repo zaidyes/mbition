@@ -65,10 +65,16 @@ void ProcInfo::setCoreId(const QString &value)
     coreId = value;
 }
 
-QStringList &ProcInfo::getRawInfo()
+QStringList& ProcInfo::getRawInfo()
 {
     return rawInfo;
 }
+
+QVariant ProcInfo::getMoreInfo()
+{
+    return QVariant::fromValue(rawInfo);
+}
+
 
 void ProcInfo::setRawInfo(const QStringList &value)
 {

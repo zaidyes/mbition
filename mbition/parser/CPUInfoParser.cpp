@@ -4,12 +4,10 @@
 #include <QString>
 #include <QTextStream>
 
-const QString PROC_FILE{"C:/Users/Juqueen/Desktop/zaid/mbition/mbition/build/debug/proc_info.txt"};
-//const QString procFile{"/proc/cpuinfo"};
+const QString PROC_FILE{"/proc/cpuinfo"};
 
 CPUInfoParser::CPUInfoParser()
 {
-    connect(this, SIGNAL(finished()), this, SIGNAL(summaryReady()));
     setFile(PROC_FILE);
 }
 

@@ -21,7 +21,7 @@ void Parser::startParsing()
 {     
     if (!m_file.open(QIODevice::ReadOnly)) {
         qDebug() << "Cannot open file";
-        //emit error("Cannot open file");
+        emit error("Cannot open file");
         return;
     }
 
